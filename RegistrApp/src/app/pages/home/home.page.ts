@@ -18,14 +18,16 @@ export class HomePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const user = await this.storageService.get('user');
-    if (user) {
-      this.userName = user;
-    }
-    else {
-      this.userName = ''
-      this.router.navigate(['/login']);
-    }
+    this.storageService.get('user').then((Response) => {
+      if(Response) {
+        this.userName = Response
+      }
+      else {
+        this.userName = ''
+        this.router.navigate(['/login']);
+      }
+    });
+    
   }
   scanQR() {
     this.qrScanner.prepare().then((status: QRScannerStatus) => {
