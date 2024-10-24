@@ -11,20 +11,16 @@ import { StorageService } from 'src/app/services/storage.service';
 })
 export class LoginPage {
   loginForm: FormGroup;
-  isLoading = false;
-  loginError: string | null = null;
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private storageService: StorageService, private router: Router) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      groupId: ['', [Validators.required]],
+      groupId: [0, [Validators.required]],
     });
   }
 
   onLogin() {
-    this.loginError = null;
-    this.isLoading = true;
 
     if (this.loginForm.valid) {
       const { username, password, groupId } = this.loginForm.value;
@@ -34,27 +30,22 @@ export class LoginPage {
 
       this.apiService.login(loginData.username, loginData.password, loginData.groupId).subscribe({
         next: async (response: any) => {
-          this.isLoading = false;
-          if (response.success) {
-            await this.storageService.set('user', response.user);
+          console.log(response)
+          if (response.isValid) {
+            await this.storageService.set('user',loginData.username);
             this.router.navigate(['/home']);
           } else {
-            this.loginError = 'Login failed. Please check your credentials.';
-            console.error('Error en el inicio de sesión:', response.message);
+            console.error('Error en el inicio de sesion:', response.message);
           }
         },
         error: (error) => {
-          this.isLoading = false;
-          this.loginError = 'An error occurred. Please try again later.';
-          console.error('Error en la solicitud de inicio de sesión:', error);
+          console.error('Error en la solicitud de inicio de sesion:', error);
         },
         complete: () => {
           console.log('Proceso de inicio de sesión completado.');
         }
       });
     } else {
-      this.isLoading = false;
-      this.loginError = 'Please fill in all required fields.';
       console.error('Formulario no válido');
     }
   }

@@ -10,7 +10,6 @@ import { ApiService } from '../../services/api.service';
 })
 export class RegisterPage implements OnInit {
   registerForm: FormGroup;
-  registerError: string | null = null;
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
     this.registerForm = this.fb.group({
@@ -18,15 +17,13 @@ export class RegisterPage implements OnInit {
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
-      groupId: [5, [Validators.required]],
+      groupId: [11, [Validators.required]],
     });
   }
 
   ngOnInit() {}
 
   onRegister() {
-    this.registerError = null;
-
     if (this.registerForm.valid) {
       const { name, username, password, email, groupId } = this.registerForm.value;
       const registrationData = { name, username, password, email, groupId };
@@ -39,7 +36,6 @@ export class RegisterPage implements OnInit {
           this.router.navigate(['/login']);
         },
         error: (error) => {
-          this.registerError = 'Registration failed. Please try again.';
           console.error('Error en el registro:', error);
         },
         complete: () => {
@@ -47,7 +43,6 @@ export class RegisterPage implements OnInit {
         }
       });
     } else {
-      this.registerError = 'Please fill in all required fields correctly.';
       console.error('Formulario no válido');
     }
   }
