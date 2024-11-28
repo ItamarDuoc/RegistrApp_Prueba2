@@ -18,7 +18,7 @@
       <ion-label position="floating">Group ID</ion-label>
       <ion-input type="number" formControlName="groupId"></ion-input>
     </ion-item>
-    <ion-button expand="block" type="submit">Login</ion-button>
+    <ion-button expand="block" type="submit" [disabled]="isLoading">Login</ion-button>
   </form>
   <ion-button expand="block" color="light" (click)="goToRegister()">Register</ion-button>
   <ion-text class="ion-text-center ion-margin-top">
